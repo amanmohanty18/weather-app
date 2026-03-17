@@ -32,7 +32,7 @@ body{
     justify-content:center;
     align-items:center;
     gap:60px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    flex-direction:column;
 }
 .weather_container{
     color:#0b3d91;
