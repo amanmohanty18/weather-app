@@ -30,7 +30,7 @@ body{
     justify-content:center;
     align-items:center;
     gap:40px;
-    flex-wrap:wrap; 
+    flex-direction:column; 
 }
 .weather_container{
     color:#0b3d91;
