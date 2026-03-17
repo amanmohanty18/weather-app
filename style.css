@@ -92,3 +92,15 @@ nav form button:hover{
     width:70px;
     margin-top:10px;
 }
+#currentLocationBtn{
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    background:#28a745;
+    color:white;
+    font-size:1rem;
+    cursor:pointer;
+}
+#currentLocationBtn:hover{
+    background:#1e7e34;
+}
