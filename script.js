@@ -16,9 +16,15 @@ const fetchResults = async (target, customLocation = null) => {
         const res = await fetch(url);
         const data = await res.json();
 
-        let locationName = customLocation 
-            ? customLocation 
-            : `${data.location.name}, ${data.location.region}`;
+        let locationName;
+
+if (customLocation) {
+    locationName = customLocation.includes(data.location.name)
+        ? customLocation
+        : `${customLocation}, ${data.location.name}`;
+} else {
+    locationName = `${data.location.name}, ${data.location.region}`;
+}
 
         let time = data.location.localtime;
         let temp = data.current.temp_c;
@@ -43,12 +49,11 @@ async function getExactLocation(lat, lon) {
         const comp = data.results[0].components;
 
         return (
-            comp.suburb ||
             comp.neighbourhood ||
+            comp.suburb ||
+            comp.road ||
             comp.city_district ||
             comp.city ||
-            comp.town ||
-            comp.village ||
             data.results[0].formatted
         );
     } catch {
@@ -96,15 +101,20 @@ currentLocationBtn.addEventListener("click", () => {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             async (position) => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
 
-                const exactLocation = await getExactLocation(lat, lon);
-                fetchResults(`${lat},${lon}`, exactLocation);
-            },
-            () => {
-                alert("Location access denied");
-            }
+        const exactLocation = await getExactLocation(lat, lon);
+        fetchResults(`${lat},${lon}`, exactLocation);
+    },
+    (error) => {
+        alert("Location error: " + error.message);
+    },
+    {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+    }
         );
     } else {
         alert("Geolocation not supported");
