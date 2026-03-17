@@ -1,11 +1,13 @@
 *{
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 body{
     font-family:'Segoe UI', sans-serif;
-    height:100vh;
+    min-height:100vh; 
     transition: background 0.8s ease;
+    overflow-x: hidden; 
 }
 .sunny{
     background: linear-gradient(135deg,#fceabb,#f8b500);
@@ -22,17 +24,13 @@ body{
 .clear{
     background: linear-gradient(135deg,#56ccf2,#2f80ed);
 }
-*{
-    margin:0;
-    padding:0;
-}
 .container{
-    height:100vh;
+    min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    gap:60px;
-    flex-direction:column;
+    gap:40px;
+    flex-wrap:wrap; 
 }
 .weather_container{
     color:#0b3d91;
@@ -42,7 +40,6 @@ body{
     box-shadow:0 10px 25px rgba(0,0,0,0.15);
     transition:0.3s;
 }
-
 .weather_container:hover{
     transform:translateY(-5px);
     box-shadow:0 20px 35px rgba(0,0,0,0.2);
@@ -60,8 +57,17 @@ body{
     gap:10px;
     margin-top:15px;
 }
+.weather_icon{
+    width:70px;
+    margin-top:10px;
+}
 nav{
-    height: 100px;
+    height: auto;
+}
+nav form{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
 }
 .search_area{
     padding:10px;
@@ -70,11 +76,6 @@ nav{
     width:250px;
     font-size:1rem;
     border-bottom:2px solid black;
-}
-nav form{
-    display:flex;
-    flex-direction:column;
-    gap:15px;
 }
 nav form button{
     padding:10px 20px;
@@ -88,10 +89,6 @@ nav form button{
 nav form button:hover{
     background:#072a66;
 }
-.weather_icon{
-    width:70px;
-    margin-top:10px;
-}
 #currentLocationBtn{
     padding:10px 20px;
     border:none;
@@ -103,4 +100,36 @@ nav form button:hover{
 }
 #currentLocationBtn:hover{
     background:#1e7e34;
+}
+@media (max-width: 768px){
+    .container{
+        flex-direction:column; 
+        padding:20px;
+        gap:20px;
+    }
+    .weather_container{
+        width:100%;
+        max-width:350px;
+        text-align:center;
+    }
+    .temp{
+        font-size:3rem;
+    }
+    .time_location{
+        font-size:1.5rem;
+    }
+    nav{
+        width:100%;
+    }
+    nav form{
+        width:100%;
+        align-items:center;
+    }
+    .search_area{
+        width:100%;
+    }
+    nav form button,
+    #currentLocationBtn{
+        width:100%;
+    }
 }
