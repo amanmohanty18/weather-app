@@ -1,61 +1,75 @@
-//http://api.weatherapi.com/v1/current.json?key=d2863b883c504497b49174620261603&q=Rourkela&aqi=no
-
-const temperatureField = document.querySelector(".temp");
+const temperatureField = document.querySelector(".temp p");
 const locationField = document.querySelector(".time_location p");
 const dateField = document.querySelector(".time_location span");
 const weatherField = document.querySelector(".condition p");
 const searchField = document.querySelector(".search_area");
-const form = document.querySelector("form"); 
-
-form.addEventListener("submit", searchForLocation);
-
-let target = "Rourkela"
+const form = document.querySelector("form");
+const currentLocationBtn = document.getElementById("currentLocationBtn");
+let target = "Rourkela";
 const fetchResults = async (target) => {
-    let url = `https://api.weatherapi.com/v1/current.json?key=d2863b883c504497b49174620261603&q=${target}&aqi=no`;
-    const res = await fetch(url);
-    const data = await res.json();
-    console.log(res);
-    let locationName = data.location.name;
-    let time = data.location.localtime;
-    let temp = data.current.temp_c;
-    let condition = data.current.condition.text;
-    document.querySelector(".weather_icon").src = "https:" + data.current.condition.icon;
-    updatDetails(temp, locationName, time, condition);
-}
-
-function updatDetails(temp, locationName, time, condition){
-    let splitDate = time.split(' ')[0];
-    let splitTime = time.split(' ')[1];
-    let currentDay = getDayName(new Date(splitDate).getDay());
+    try {
+        let url = `https://api.weatherapi.com/v1/current.json?key=d2863b883c504497b49174620261603&q=${target}&aqi=no`;
+        const res = await fetch(url);
+        const data = await res.json();
+        let locationName = data.location.name;
+        let time = data.location.localtime;
+        let temp = data.current.temp_c;
+        let condition = data.current.condition.text;
+        document.querySelector(".weather_icon").src = "https:" + data.current.condition.icon;
+        updateDetails(temp, locationName, time, condition);
+    } catch (error) {
+        alert("Error fetching weather data");
+    }
+};
+function updateDetails(temp, locationName, time, condition) {
+    let [date, timeOnly] = time.split(" ");
+    let dayName = getDayName(new Date(date).getDay());
     temperatureField.innerText = `${temp}°C`;
     locationField.innerText = locationName;
-    dateField.innerText = `${splitDate} ${currentDay} ${splitTime}`;
+    dateField.innerText = `${date} ${dayName} ${timeOnly}`;
     weatherField.innerText = condition;
-    document.body.className = condition.toLowerCase();
+    updateBackground(condition);
 }
-
-function searchForLocation(e){
+function updateBackground(condition) {
+    let c = condition.toLowerCase();
+    if (c.includes("cloud")) {
+        document.body.className = "cloudy";
+    } else if (c.includes("rain")) {
+        document.body.className = "rainy";
+    } else if (c.includes("sun") || c.includes("clear")) {
+        document.body.className = "sunny";
+    } else if (c.includes("mist") || c.includes("fog")) {
+        document.body.className = "mist";
+    } else {
+        document.body.className = "clear";
+    }
+}
+function searchForLocation(e) {
     e.preventDefault();
+    if (searchField.value.trim() === "") return;
     target = searchField.value;
     fetchResults(target);
 }
-fetchResults(target);
+currentLocationBtn.addEventListener("click", () => {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
 
-function getDayName(number){
-    switch(number){
-        case 0: 
-        return "Sunday";
-        case 1: 
-        return "Monday";
-        case 2: 
-        return "Tuesday";
-        case 3: 
-        return "Wednesday";
-        case 4: 
-        return "Thursday";
-        case 5: 
-        return "Friday";
-        case 6: 
-        return "Saturday";
+                fetchResults(`${lat},${lon}`);
+            },
+            () => {
+                alert("Location access denied");
+            }
+        );
+    } else {
+        alert("Geolocation not supported");
     }
+});
+function getDayName(number) {
+    const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    return days[number];
 }
+form.addEventListener("submit", searchForLocation);
+fetchResults(target);
