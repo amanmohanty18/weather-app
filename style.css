@@ -38,11 +38,6 @@ body{
     padding:40px;
     border-radius:20px;
     box-shadow:0 10px 25px rgba(0,0,0,0.15);
-    transition:0.3s;
-}
-.weather_container:hover{
-    transform:translateY(-5px);
-    box-shadow:0 20px 35px rgba(0,0,0,0.2);
 }
 .temp{
     font-size:5rem;
@@ -59,10 +54,6 @@ body{
 }
 .weather_icon{
     width:70px;
-    margin-top:10px;
-}
-nav{
-    height: auto;
 }
 nav form{
     display:flex;
@@ -74,62 +65,16 @@ nav form{
     border:none;
     border-radius:8px;
     width:250px;
-    font-size:1rem;
     border-bottom:2px solid black;
 }
 nav form button{
-    padding:10px 20px;
+    padding:10px;
     border:none;
     border-radius:8px;
     background:#0b3d91;
     color:white;
-    font-size:1rem;
     cursor:pointer;
-}
-nav form button:hover{
-    background:#072a66;
 }
 #currentLocationBtn{
-    padding:10px 20px;
-    border:none;
-    border-radius:8px;
     background:#28a745;
-    color:white;
-    font-size:1rem;
-    cursor:pointer;
-}
-#currentLocationBtn:hover{
-    background:#1e7e34;
-}
-@media (max-width: 768px){
-    .container{
-        flex-direction:column; 
-        padding:20px;
-        gap:20px;
-    }
-    .weather_container{
-        width:100%;
-        max-width:350px;
-        text-align:center;
-    }
-    .temp{
-        font-size:3rem;
-    }
-    .time_location{
-        font-size:1.5rem;
-    }
-    nav{
-        width:100%;
-    }
-    nav form{
-        width:100%;
-        align-items:center;
-    }
-    .search_area{
-        width:100%;
-    }
-    nav form button,
-    #currentLocationBtn{
-        width:100%;
-    }
 }
