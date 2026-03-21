@@ -7,29 +7,15 @@ const form = document.querySelector("form");
 const currentLocationBtn = document.getElementById("currentLocationBtn");
 
 let target = "Rourkela";
-
-const OPENCAGE_API_KEY = "66f33c7d10d543b9bf26d32040b907c3";
-
-const fetchResults = async (target, customLocation = null) => {
+const fetchResults = async (target) => {
     try {
         let url = `https://api.weatherapi.com/v1/current.json?key=d2863b883c504497b49174620261603&q=${target}&aqi=no`;
         const res = await fetch(url);
         const data = await res.json();
-
-        let locationName;
-
-if (customLocation) {
-    locationName = customLocation.includes(data.location.name)
-        ? customLocation
-        : `${customLocation}, ${data.location.name}`;
-} else {
-    locationName = `${data.location.name}, ${data.location.region}`;
-}
-
+        let locationName = data.location.name;
         let time = data.location.localtime;
         let temp = data.current.temp_c;
         let condition = data.current.condition.text;
-
         document.querySelector(".weather_icon").src =
             "https:" + data.current.condition.icon;
 
@@ -38,29 +24,6 @@ if (customLocation) {
         alert("Error fetching weather data");
     }
 };
-
-async function getExactLocation(lat, lon) {
-    try {
-        const res = await fetch(
-            `https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lon}&key=${OPENCAGE_API_KEY}`
-        );
-        const data = await res.json();
-
-        const comp = data.results[0].components;
-
-        return (
-            comp.neighbourhood ||
-            comp.suburb ||
-            comp.road ||
-            comp.city_district ||
-            comp.city ||
-            data.results[0].formatted
-        );
-    } catch {
-        return "Location not found";
-    }
-}
-
 function updateDetails(temp, locationName, time, condition) {
     let [date, timeOnly] = time.split(" ");
     let dayName = getDayName(new Date(date).getDay());
@@ -72,10 +35,8 @@ function updateDetails(temp, locationName, time, condition) {
 
     updateBackground(condition);
 }
-
 function updateBackground(condition) {
     let c = condition.toLowerCase();
-
     if (c.includes("cloud")) {
         document.body.className = "cloudy";
     } else if (c.includes("rain")) {
@@ -88,7 +49,6 @@ function updateBackground(condition) {
         document.body.className = "clear";
     }
 }
-
 function searchForLocation(e) {
     e.preventDefault();
     if (searchField.value.trim() === "") return;
@@ -96,31 +56,23 @@ function searchForLocation(e) {
     target = searchField.value;
     fetchResults(target);
 }
-
 currentLocationBtn.addEventListener("click", () => {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-            async (position) => {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
+            (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
 
-        const exactLocation = await getExactLocation(lat, lon);
-        fetchResults(`${lat},${lon}`, exactLocation);
-    },
-    (error) => {
-        alert("Location error: " + error.message);
-    },
-    {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0
-    }
+                fetchResults(`${lat},${lon}`);
+            },
+            () => {
+                alert("Location access denied");
+            }
         );
     } else {
         alert("Geolocation not supported");
     }
 });
-
 function getDayName(number) {
     const days = [
         "Sunday","Monday","Tuesday","Wednesday",
@@ -128,7 +80,5 @@ function getDayName(number) {
     ];
     return days[number];
 }
-
 form.addEventListener("submit", searchForLocation);
-
 fetchResults(target);
